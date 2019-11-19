@@ -1,0 +1,263 @@
+/* ======================================= variables ======================================= */
+* {
+
+    /* colors */
+    --col-font: #bbbbbb;
+    --col-toolbar-bg: #222222;
+    --col-active: #333333;
+    --col-workspace-bg: #111111;
+    --col-content-div-bg: #151515;
+    --col-scroll-track: #131313;
+    --col-decor-purple: #880033;
+    --col-decor-dark-purple: #440011;
+
+    /* gradients */
+    --gradient-toolbar-bg: linear-gradient(0deg, var(--col-workspace-bg) 0%, var(--col-toolbar-bg) 100%);
+    --gradient-choice-button: linear-gradient(0deg, var(--col-content-div-bg) 0%, var(--col-toolbar-bg) 100%);
+    
+
+    /* sizes */
+    --toolbar-height: 50px;
+    --content-div-vmargin: 30px;
+    --content-div-hmargin: 30px;
+    --choice-div-width: 160px;
+    --base-padding: 10px;
+    --input-padding: 5px;
+    --input-height: 30px;
+
+    /* font sizes */
+    --fs-big: 1.6em;
+    --fs-mid: 1.2em;
+    --fs-small: 1em;
+
+    /* durations */
+    --duration-short: 300ms;
+
+    /* radii */
+    --radius-increment: 5px;
+
+}
+
+/* ======================================= defaults ======================================= */
+* {
+
+    /* resets */
+    margin: 0;
+    padding: 0;   
+    user-select: none;
+    border: none;
+    overflow: hidden;
+    outline: none;
+    
+    /* font */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    color: var(--col-font);
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+input, textarea, select {
+    outline: none;
+}
+
+input[type='text']:focus,  textarea:focus{
+    background-color: var(--col-active);
+}
+
+input[type='text']::selection, textarea::selection{
+    background: var(--col-decor-purple);
+}
+
+input[type='submit'], select{
+    transition-duration: var(--duration-short);
+    cursor: pointer;
+}
+
+input[type='submit']:hover, select:hover{
+    filter: brightness(1.2);
+}
+
+input[type='submit']:active, select:active{
+    filter: brightness(0.9);
+}
+/* scrollbar */
+::-webkit-scrollbar{
+    width: 10px;
+    height: 18px;
+}
+::-webkit-scrollbar-track{
+    background-color: var(--col-scroll-track);
+}
+::-webkit-scrollbar-thumb, ::-webkit-scrollbar-corner{
+    background-color: var(--col-decor-dark-purple);
+}
+
+
+/* ======================================= toolbar ======================================= */
+#toolbarDiv{
+    width: 100%;
+    height: var(--toolbar-height);
+    background: var(--gradient-toolbar-bg);
+}
+
+.toolbarButton{
+    height: var(--toolbar-height);
+    background: var(--gradient-toolbar-bg);
+    font-size: var(--fs-mid);
+    padding: var(--base-padding);
+}
+
+#toolbarMainLogo{
+    height: var(--toolbar-height);
+    font-size: var(--fs-big);
+    padding: 0px 50px;
+    display: -moz-box;
+    text-shadow: 0 0 1em var(--col-decor-purple), 0 0 0.2em var(--col-decor-purple);
+}
+
+
+/* ======================================= workspace ======================================= */
+#workspaceDiv{
+    width: 100%;
+    height: calc(100% - var(--toolbar-height));
+    background-color: var(--col-workspace-bg);
+}
+
+.workspaceContentDiv{
+    margin: var(--content-div-vmargin) var(--content-div-hmargin);
+    padding: var(--base-padding);
+    height: calc(100% - 2 * var(--content-div-vmargin));
+    background-color: var(--col-content-div-bg);
+    border-radius: var(--radius-increment);
+    box-shadow: 0px 0px 20px 10px var(--col-content-div-bg);
+    float: left;
+}
+
+#dataTypeChoiceDiv{
+    width: var(--choice-div-width);
+}
+
+.dataTypeChoiceButton{
+    margin: var(--base-padding);
+    border-radius: var(--radius-increment);
+    width: calc(100% - 2 * (var(--base-padding)));
+    height: 40px;
+    background: var(--gradient-choice-button);
+    transition-duration: var(--duration-short);
+}
+
+#workAreaDiv{
+    margin-left: 0;
+    width: calc(100% - 3 * var(--content-div-hmargin) - var(--choice-div-width) - 4 * var(--base-padding));
+}
+
+/* ======================================= work area components ======================================= */
+.componentDiv{height: 100%;}
+.componentTitleDiv{height: 40px;}
+.componentBrowseDiv{height: 50px;}
+.componentItemViewDiv{height: calc(100% - 140px);}
+.componentButtonDiv{height: 50px;}
+
+.componentCampaignInfoDiv{height: calc(100% - 100px);}
+
+.componentTitle{
+    margin: var(--base-padding);
+    font-size: var(--fs-mid); 
+    text-shadow: 0 0 1em var(--col-decor-purple), 0 0 0.2em var(--col-decor-purple);
+}
+
+.viewTextfield, .viewSelect, .viewTextarea, .browseSelect, .browseSearch{
+    margin: var(--base-padding);
+    background-color: var(--col-toolbar-bg);
+}
+
+.viewTextfield, .viewTextarea, .browseSearch{
+    padding: var(--input-padding);
+}
+
+/* widths */
+.viewTextfield, .viewTextarea{
+    width: calc(100% - 2 * var(--base-padding) - 2 * var(--input-padding));
+}
+.viewSelect {
+    width: calc(100% - 2 * var(--base-padding));
+}
+.browseSelect {
+    width: 30%;
+}
+.browseSearch {
+    margin-left: 0;
+    width: calc(70% - 3 * var(--base-padding) - 8px - 2 * var(--input-padding));
+}
+
+/* heights */
+.viewTextfield, .browseSearch{
+    height: calc(var(--input-height) - 2 * var(--input-padding));    
+}
+.viewSelect, .browseSelect{
+    height: calc(var(--input-height));   
+}
+
+/* textareas */
+.viewTextarea {
+    resize: none;
+    overflow-y: scroll;
+}
+#characterViewDescription{height: calc(100% - 130px);}
+#locationViewDescription{height: calc(100% - 80px);}
+#noteViewContent{height: calc(100% - 80px);}
+#campaignInfoDescription{height: calc(100% - 180px);}
+
+/* buttons */
+.viewSaveButton, .viewNewButton, .viewDeleteButton, #campaignInfoSaveButton{
+    margin: var(--base-padding);
+    background-color: var(--col-toolbar-bg);
+    width: calc(100% / 3 - 2 * var(--base-padding));
+    height: var(--input-height);    
+}
+.viewSaveButton, .viewDeleteButton{
+    margin-left: 0;
+}
+#campaignInfoSaveButton{
+    width: calc(100% - 2 * var(--base-padding));
+}
+
+.viewDeleteButton:hover, .viewDeleteButton:active{
+    background-color: var(--col-decor-dark-purple);
+}
+
+/* map */
+.componentContentDiv{
+    height: calc(100% - 20px - 2 * var(--base-padding));
+}
+#mapCanvasDiv{
+    height: calc(100% - 2 * var(--base-padding));
+    width: calc(100% - 140px);
+    margin: var(--base-padding);
+    margin-right: 0px;
+    float: left;
+    border: solid 1px var(--col-decor-purple);
+    cursor: crosshair;
+}
+#mapCanvas{
+    background-color: #bbbbbb;    
+}
+#mapToolsDiv{
+    height: calc(100% - 2 * var(--base-padding));
+    border: solid 1px var(--col-decor-purple);
+    width: 116px; 
+    margin: var(--base-padding);
+    margin-left: 0px;
+    float: left;
+}
+.colorPaletteSingleColorSpan{
+    border: solid 2px var(--col-decor-purple);
+    height: 32px;
+    width: 32px;
+    float: left;
+    margin: 1px;
+}

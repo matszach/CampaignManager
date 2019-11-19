@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+<!-- ==================================== HEAD ==================================== -->
+<head>
+  <!-- META -->
+  <meta charset="utf-8">
+  <title>CampaignManager</title>
+  <!-- LIBS -->
+  <script src="lib/jquery.js"></script>
+  <script src="lib/util.js"></script>
+  <!-- CONST -->
+  <script src="const.js"></script>
+  <!-- MODEL -->
+  <script src="model/vo.js"></script>
+  <script src="model/campaignState.js"></script>
+  <script src="model/repository.js"></script>
+  <script src="model/map.js"></script>
+  <!-- VIEWS -->
+  <script src="views/viewController.js"></script>
+  <script src="views/campaignInfoView/campaignInfoView.js"></script>
+  <script src="views/locationView/locationView.js"></script>
+  <script src="views/mapView/mapView.js"></script>
+  <script src="views/noteView/noteView.js"></script>
+  <script src="views/characterView/characterView.js"></script>
+  <!-- MAIN -->
+  <script src="main.js"></script>
+  <!-- STYLES -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<!-- ==================================== BODY ==================================== -->
+<body>
+    <div id='toolbarDiv'>
+        <span id='toolbarMainLogo'>CAMPAIGN MANAGER</span>
+        <input type="submit" id='toolbarButtonNewCampaign' class='toolbarButton' value="New"/>
+        <input type="submit" id='toolbarButtonLoadCampaign' class='toolbarButton' value="Load" onclick="loadCampaignState()"/>
+        <input type="submit" id='toolbarButtonExportCampaign' class='toolbarButton' value="Export" onclick="saveAndExportCampaignState()"/>
+        <input type="submit" id='toolbarButtoPrint' class='toolbarButton' value="Print"/>
+    </div>
+    <div id='workspaceDiv'>
+        <div id='dataTypeChoiceDiv' class='workspaceContentDiv'>
+            <input type="submit" class='dataTypeChoiceButton' value="Campaign Info" onclick="campaignInfoView.toDisplay()"/>
+            <input type="submit" class='dataTypeChoiceButton' value="Map" onclick="mapView.toDisplay()"/>
+            <input type="submit" class='dataTypeChoiceButton' value="Characters" onclick="characterView.toDisplay()"/>
+            <input type="submit" class='dataTypeChoiceButton' value="Locations" onclick="locationView.toDisplay()"/>
+            <input type="submit" class='dataTypeChoiceButton' value="Notes" onclick="noteView.toDisplay()"/>
+        </div>
+        <div id='workAreaDiv' class='workspaceContentDiv'></div>
+    </div>
+    <script src="init.js"></script>
+</body>
+</html>
