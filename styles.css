@@ -236,28 +236,49 @@ input[type='submit']:active, select:active{
 }
 #mapCanvasDiv{
     height: calc(100% - 2 * var(--base-padding));
-    width: calc(100% - 140px);
+    width: calc(100% - 170px);
     margin: var(--base-padding);
-    margin-right: 0px;
     float: left;
-    border: solid 1px var(--col-decor-purple);
     cursor: crosshair;
+    border-radius: calc(2 * var(--radius-increment));
 }
 #mapCanvas{
     background-color: #bbbbbb;    
 }
 #mapToolsDiv{
     height: calc(100% - 2 * var(--base-padding));
-    border: solid 1px var(--col-decor-purple);
-    width: 116px; 
+    width: 120px; 
     margin: var(--base-padding);
     margin-left: 0px;
     float: left;
 }
-.colorPaletteSingleColorSpan{
-    border: solid 2px var(--col-decor-purple);
-    height: 32px;
-    width: 32px;
-    float: left;
-    margin: 1px;
+
+#colorPaletteDiv{
+   background: var(--gradient-choice-button);
+   padding: calc(0.5 * var(--base-padding));
+   border-radius: calc(2 * var(--radius-increment));
 }
+.colorPaletteSingleColorSpan{
+    border-radius: 50%;
+    height: 33px;
+    width: 33px;
+    float: left;
+    margin: 1.5px;
+    cursor: pointer;
+}
+
+.colorPaletteSingleColorSpan:hover{
+    filter: brightness(1.2);
+}
+
+.colorPaletteSingleColorSpan:active{
+    filter: brightness(0.8);
+}
+
+.colorPaletteSingleColorSpan.selectedColorDiv{
+    box-shadow: 0 0 3px 4px var(--col-decor-purple);
+    z-index: 10000;
+    position: relative;
+}
+
+

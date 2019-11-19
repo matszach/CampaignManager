@@ -21,6 +21,8 @@ class MapViewController extends ViewController{
     map;
     mapEditorData;
 
+    selectedColor;
+
     constructor(map, mapEditorData){
         super()
         this.map = map;
@@ -43,16 +45,16 @@ class MapViewController extends ViewController{
     loadColorPalette(){
         var paletteHTML = '';
         for(var i = 0; i < this.mapEditorData.savedColors.length; i++){
-            if(i % 3 == 0){
-                paletteHTML += '<div class="colorPaletteRow">\n';
-            }
-            paletteHTML += `<div class="colorPaletteSingleColorSpan" style="background-color: ${this.mapEditorData.savedColors[i]}"></div>\n`;
-            if(i % 3 == 2){
-                paletteHTML += '</div>\n';
-            }
+            paletteHTML += `<div class="colorPaletteSingleColorSpan" onclick="mapView.selectThisColor(this);"
+                            style="background-color: ${this.mapEditorData.savedColors[i]}"></div>\n`;
         }
-        console.log(paletteHTML);
         $('#colorPaletteDiv').html(paletteHTML);
+    }
+
+    selectThisColor(element){
+        this.selectedColor = element.style.backgroundColor;
+        $('.selectedColorDiv').removeClass('selectedColorDiv');
+        element.classList.add('selectedColorDiv');
     }
 
     
