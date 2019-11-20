@@ -12,12 +12,12 @@ class Map{
 }
 
 class MapEditorData{
-    zoomState;
+    zoomState = 0;
     mapPosition;
     savedColors;
     constructor(sizeX, sizeY){
-        this.zoomState = 1;
-        this.mapCenterPositon = {
+        this.zoomState = 100;
+        this.mapPosition = {
             x: Math.floor(sizeX/2), 
             y: Math.floor(sizeY/2)
         } 
@@ -26,6 +26,7 @@ class MapEditorData{
                             '#000000', '#ffffff', '#ffffff',
                             '#ffffff', '#ffffff', '#ffffff'];
     }
+
     reload(loadedMapEditordata){
         this.zoomState = loadedMapEditordata.zoomState;
         this.mapPosition = loadedMapEditordata.mapPositon;

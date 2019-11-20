@@ -252,33 +252,73 @@ input[type='submit']:active, select:active{
     margin-left: 0px;
     float: left;
 }
-
-#colorPaletteDiv{
-   background: var(--gradient-choice-button);
-   padding: calc(0.5 * var(--base-padding));
-   border-radius: calc(2 * var(--radius-increment));
+.mapEditorToolDiv{
+    background: var(--gradient-choice-button);
+    padding: calc(0.5 * var(--base-padding));
+    border-radius: calc(2 * var(--radius-increment));
+    margin-bottom: var(--base-padding);
 }
-.colorPaletteSingleColorSpan{
+
+.colorPaletteSingleColorDiv{
     border-radius: 50%;
     height: 33px;
     width: 33px;
     float: left;
     margin: 1.5px;
     cursor: pointer;
+    transition-duration: 100ms;
 }
 
-.colorPaletteSingleColorSpan:hover{
-    filter: brightness(1.2);
+.colorPaletteSingleColorDiv:hover{
+    transform: scale(1.06);
 }
 
-.colorPaletteSingleColorSpan:active{
-    filter: brightness(0.8);
+.colorPaletteSingleColorDiv:active{
+    transform: scale(0.94);
 }
 
-.colorPaletteSingleColorSpan.selectedColorDiv{
+.colorPaletteSingleColorDiv.selectedColorDiv{
     box-shadow: 0 0 3px 4px var(--col-decor-purple);
     z-index: 10000;
     position: relative;
+    transform: scale(1.03);
+}
+#colorChooser{
+    width: calc(100% - 0.5 * var(--base-padding));
+    height: 15px;
+    background-color: transparent;
+    padding: calc(0.25 * var(--base-padding));
+    -webkit-appearance: none;
+    cursor: pointer;
 }
 
-
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: var(--radius-increment);   
+}
+.mapToolsSlider{
+    background-color: var(--col-font);
+    margin: calc(0.5 * var(--base-padding));
+    border-radius: var(--radius-increment);   
+    height: 15px;
+    width: calc(100% - var(--base-padding));
+    -webkit-appearance: none;
+}
+.mapToolsSlider::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    background: var(--col-decor-dark-purple);
+    height: 15px;
+    width: 8px;
+    cursor: pointer;
+    transition-duration: 150ms;
+}
+.mapToolsSlider::-webkit-slider-thumb:hover{
+    background: var(--col-decor-purple);
+    width: 10px;
+}
+.mapToolsLabel{
+    margin: auto;
+}
