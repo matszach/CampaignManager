@@ -9,6 +9,9 @@ class MapViewController extends ViewController{
     scaleStep = 5;
     defaultScale = 100;
 
+    // path
+    objectPath = 'mapView';
+
     html = `
     <div class='componentDiv'>
         <div class='componentTitleDiv'>
@@ -17,18 +20,23 @@ class MapViewController extends ViewController{
         <div class='componentContentDiv'>
             <div id='mapCanvasDiv'>
                 <canvas id='mapCanvas' 
-                    >
+                    onmousemove='${this.objectPath}.mouseMoveHandle(event)' 
+                    onmouseenter='${this.objectPath}.mouseEnterHandle(event)' 
+                    onmouseout='${this.objectPath}.mouseExitHandle(event)' 
+                    onmousedown='${this.objectPath}.mouseDownHandle(event)' 
+                    onmouseup='${this.objectPath}.mouseUpHandle(event)'>
                 </canvas>    
             </div>
             <div id='mapToolsDiv'>
                 <div id='colorPaletteDiv' class='mapEditorToolDiv'></div>
                 <div id='colorEditDiv' class='mapEditorToolDiv'>
-                    <input type='color' id='colorChooser' onchange='mapView.updateSelectedColor()'/>
+                    <input type='color' id='colorChooser' onchange='${this.objectPath}.updateSelectedColor()'/>
                 </div>
                 <div id='zoomSliderDiv' class='mapEditorToolDiv'>
                     <input type='range' id='zoomSlider' class='mapToolsSlider' 
-                        onchange='mapView.updateFromZoomSlider()' 
-                        value='${this.defaultScale}' min='${this.minScale}' max='${this.maxScale}' step='${this.scaleStep}'/>
+                        onchange='${this.objectPath}.updateFromZoomSlider()' 
+                        value='${this.defaultScale}' min='${this.minScale}' 
+                        max='${this.maxScale}' step='${this.scaleStep}'/>
                     <label class='mapToolsLabel' id='zoomSliderValueLabel'></label>
                 </div>
             </div>
@@ -56,6 +64,7 @@ class MapViewController extends ViewController{
         this.attachListeners();
         this.fitMapCanvasToDiv();
         this.initToolsState();
+        this.mouseReset();
     }
 
     /**
@@ -142,7 +151,9 @@ class MapViewController extends ViewController{
     attachListeners(){
         $(window).on('resize', e => this.resizeCanvasEvent(e));
         $('#mapCanvas').on('wheel', e => this.handleMouseWheel(e));
+        $('#zoomSliderDiv').on('wheel', e => this.handleMouseWheel(e));
         this.displayOnMapCanvasInterval = setInterval(this.displayOnMapCanvas, 50);
+        $('#mapCanvas').bind('contextmenu', () => {return false});      
     }
 
     dropListeners(){
@@ -174,10 +185,6 @@ class MapViewController extends ViewController{
         if(!$('#mapCanvas').length){
             mapView.dropListeners();
         }
-        mapView.displayMapGridAndFields();
-    }
-
-    displayMapGridAndFields(){
 
         var canvasHeight = $('#mapCanvas').height();
         var canvasWidth = $('#mapCanvas').width();
@@ -190,42 +197,42 @@ class MapViewController extends ViewController{
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         // size variables
-        var xLim = canvasWidth / mapView.baseFieldSize / mapView.mapEditorData.zoomState * 100;
-        var yLim = canvasHeight / mapView.baseFieldSize / mapView.mapEditorData.zoomState * 100;
+        var xMin = mapView.mapEditorData.mapPositionX;
+        var yMin = mapView.mapEditorData.mapPositionY;
+        var xMax = canvasWidth + xMin;
+        var yMax = canvasHeight + yMin;
         var fieldSize = mapView.baseFieldSize * mapView.mapEditorData.zoomState / 100;
 
-        // fields
-        var fields = mapView.map.fields;
-        for(var x = 0; x < xLim; x++){
-            for(var y = 0; y < yLim; y++){
-                if(fields[x][y]){
-                    ctx.fillStyle = fields[x][y];
-                    ctx.fillRect(x, y, fieldSize, fieldSize);
-                } else { // TO BE REMOVED LATER
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(x * fieldSize, y * fieldSize, fieldSize, fieldSize);
-                }
-            }
-        }
+        mapView.displayMapGrid(ctx, xMin, xMax, yMin, yMax, fieldSize, canvasWidth, canvasHeight);
 
+        
+        // // fields
+        // var fields = mapView.map.fields;
+        // for(var x = 0; x < xLim + 1; x++){
+        //     for(var y = 0; y < yLim + 1; y++){
+        //         if(fields[x][y]){
+        //             ctx.fillStyle = fields[x][y];
+        //             ctx.fillRect(x, y, fieldSize, fieldSize);
+        //         } else { 
+        //             ctx.fillStyle = '#FFFFFF';
+        //             ctx.fillRect(x * fieldSize, y * fieldSize, fieldSize, fieldSize);
+        //         }
+        //     }
+        // }
+    }
+
+    displayMapGrid(ctx, xMin, xMax, yMin, yMax, fieldSize, canvasWidth, canvasHeight){
         ctx.beginPath();
         ctx.lineWidth = this.baseLineSize * mapView.mapEditorData.zoomState / 100;
-
-        // vertical grid lines
-        for(var x = 0; x < xLim; x++){
-            var xVal = x * fieldSize;
-            ctx.moveTo(xVal, 0);
-            ctx.lineTo(xVal, canvasHeight);
+        for(var x = xMin % fieldSize; x < xMax - xMin; x += fieldSize){
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvasHeight);
         }
-
-        // horisontal grid lines
-        for(var y = 0; y < yLim; y++){
-            var yVal = y * fieldSize;
-            ctx.moveTo(0, yVal);
-            ctx.lineTo(canvasWidth, yVal);
+        for(var y = yMin % fieldSize; y < yMax - yMin; y += fieldSize){
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvasWidth, y);
         }
         ctx.stroke();
-
     }
 
 
@@ -233,37 +240,89 @@ class MapViewController extends ViewController{
     /**
      * mouse actions on canvas ==========================================================================================
      */
-    isMouseOver = false;
-    isMouseLeftDown = false;
-    isMouseRightDown = false;
+    mouseIsActive = false;
+    mouseX = 0;
+    mouseY = 0;
+    mouseIsRightDown = false;
+    mouseIsLeftDown = false;
 
-    mouseIn(){
-
+    mouseMoveHandle(event){
+        var off = $('#mapCanvas').offset();
+        this.handleCanvasDrag();
+        this.mouseX = event.pageX - off.left;
+        this.mouseY = event.pageY - off.top;
     }
-    mouseOut(){
-
+    mouseEnterHandle(event){
+        this.mouseIsActive = true;
+        this.mouseMoveHandle(event);
     }
-    mouseUp(){
-
+    mouseExitHandle(event){
+        this.mouseIsActive = false;
+        this.mouseX = 0;
+        this.mouseY = 0;
     }
-    mouseDown(){
-
+    mouseDownHandle(event){
+        if(event.buttons == 0) { // no buttons
+            // nothing
+        } else if(event.buttons == 1) { // only left
+            this.mouseLeftDownStart();
+        } else if(event.buttons == 2) { // only right
+            this.mouseRightDownStart();
+        } else if(event.buttons == 3) { // both
+            this.mouseLeftDownStart();
+            this.mouseRightDownStart();
+        }
     }
+    mouseUpHandle(event){
+        if(event.buttons == 0) { // no buttons
+            this.mouseLeftDownEnd();
+            this.mouseRightDownEnd();
+        } else if(event.buttons == 1) { // only left
+            this.mouseRightDownEnd();
+        } else if(event.buttons == 2) { // only right
+            this.mouseLeftDownEnd();
+        } else if(event.buttons == 3) { // both
+            // nothing
+        }
+    }
+
+
     mouseReset(){
-
+        this.mouseIsActive = false;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.mouseIsRightDown = false;
+        this.mouseIsLeftDown = false;
     }
 
-    actOnCanvas(){
-        this.drawAtCursor();
+    mouseLeftDownStart(){
+        this.mouseIsLeftDown = true;
+
     }
+    mouseLeftDownEnd(){
+        this.mouseIsLeftDown = false; 
+    }
+    mouseRightDownStart(){
+        this.mouseIsRightDown = true;
+        $('#mapCanvas').css('cursor', 'grabbing');
 
-
+    }
+    mouseRightDownEnd(){
+        this.mouseIsRightDown = false; 
+        $('#mapCanvas').css('cursor', 'crosshair');
+    }
 
     /**
-     * drawing on canvas ==========================================================================================
+     * mouse actions on canvas proper ==========================================================================================
      */
-    drawAtCursor(){
-        console.log('draw');
+    handleCanvasDrag(){
+        if(this.mouseIsRightDown){
+            var off = $('#mapCanvas').offset();
+            var x = this.mouseX - event.pageX + off.left;
+            var y = this.mouseY - event.pageY + off.top;
+            this.mapEditorData.mapPositionX -= x;
+            this.mapEditorData.mapPositionY -= y;
+        }
     }
 
 }

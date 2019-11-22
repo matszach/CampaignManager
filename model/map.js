@@ -13,7 +13,8 @@ class Map{
 
 class MapEditorData{
     zoomState = 0;
-    mapPosition;
+    mapPositionX = 0;
+    mapPositionY = 0;
     savedColors;
     constructor(sizeX, sizeY){
         this.zoomState = 100;
@@ -29,7 +30,8 @@ class MapEditorData{
 
     reload(loadedMapEditordata){
         this.zoomState = loadedMapEditordata.zoomState;
-        this.mapPosition = loadedMapEditordata.mapPositon;
+        this.mapPositionX = loadedMapEditordata.mapPositonX;
+        this.mapPositionY = loadedMapEditordata.mapPositonY;
         this.savedColors = loadedMapEditordata.savedColors;
     }
 }
